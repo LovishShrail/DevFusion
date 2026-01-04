@@ -9,7 +9,7 @@ const Navbar = () => {
         <header className="flex justify-between items-center p-2 bg-slate-900 border-b border-slate-800 flex-shrink-0">
             <div className="flex items-center gap-4">
                 <Link to="/home" className="flex items-center gap-2 group">
-                    <h1 className="pl-2 text-xl font-bold text-white group-hover:text-blue-400 transition-colors">Ai_Engneer</h1>
+                    <h1 className="pl-2 text-xl font-bold text-white group-hover:text-blue-400 transition-colors">Dev Fusion</h1>
                 </Link>
             </div>
 

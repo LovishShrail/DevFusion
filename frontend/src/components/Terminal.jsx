@@ -13,7 +13,7 @@ const Terminal = React.forwardRef((props, ref) => {
         const term = new XTerminal({
             cursorBlink: true,
             theme: {
-                background: '#1e1e1e',
+                background: '#020617',
                 foreground: '#ffffff',
             },
             rows: 10,
@@ -30,7 +30,7 @@ const Terminal = React.forwardRef((props, ref) => {
             fitAddon.fit();
         }, 50);
 
-        term.writeln('Welcome to your AI IDE!');
+        term.writeln('Terminal initialized.\r\n');
         
         // Expose the terminal instance to the parent via the ref
         if (ref) {
