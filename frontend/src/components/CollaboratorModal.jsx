@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const CollaboratorModal = ({ 
     isModalOpen, 
@@ -8,73 +8,101 @@ const CollaboratorModal = ({
     handleUserClick, 
     addCollaborators 
 }) => {
+    const [searchQuery, setSearchQuery] = useState('')
+
     if (!isModalOpen) return null
 
+    // Filter users dynamically by username or email (robust optional-chaining to support legacy records)
+    const filteredUsers = users.filter(user => {
+        const query = searchQuery.toLowerCase();
+        const emailMatch = user.email?.toLowerCase().includes(query);
+        const usernameMatch = user.username?.toLowerCase().includes(query);
+        return emailMatch || usernameMatch;
+    });
+
     return (
-        // 1. Backdrop with Blur and dark overlay
-        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 transition-all p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all p-4 select-none">
             
-            {/* 2. Modal Container - Dark theme styling */}
-            <div className="bg-slate-900 p-6 rounded-xl shadow-2xl border border-slate-800 w-96 max-w-full relative overflow-hidden animate-fadeIn">
+            <div className="bg-[#000a30] p-6 rounded-2xl shadow-2xl shadow-black/40 border border-white/[0.08] w-[400px] max-w-full relative overflow-hidden animate-fadeIn pb-20">
                 
                 {/* Header */}
-                <header className='flex justify-between items-center mb-6'>
-                    <h2 className='text-xl font-bold text-white'>Select User</h2>
+                <header className='flex justify-between items-center mb-5'>
+                    <h2 className='text-lg font-semibold text-white tracking-tight'>Add Collaborators</h2>
                     <button 
-                        onClick={() => setIsModalOpen(false)} 
-                        className='p-2 text-slate-400 hover:text-white transition-colors rounded-full hover:bg-slate-800'
+                        onClick={() => {
+                            setSearchQuery('');
+                            setIsModalOpen(false);
+                        }} 
+                        className='p-1.5 text-slate-500 hover:text-white transition-colors rounded-lg hover:bg-white/[0.06]'
                     >
-                        <i className="ri-close-fill text-xl"></i>
+                        <i className="ri-close-line text-lg"></i>
                     </button>
                 </header>
 
-                {/* Users List */}
-                {/* Added custom scrollbar styling for dark mode */}
-                <div className="users-list flex flex-col gap-3 mb-20 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent pr-2">
-                    {users.map(user => {
+                {/* Search */}
+                <div className="mb-4 relative">
+                    <i className="ri-search-2-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 text-sm"></i>
+                    <input 
+                        type="text"
+                        placeholder="Search people..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-9 pr-4 py-2.5 text-[13px] text-slate-200 placeholder-slate-600 focus:outline-none focus:border-lagoon-spark/40 focus:ring-1 focus:ring-lagoon-spark/20 transition-all"
+                    />
+                </div>
+
+                {/* Users */}
+                <div className="flex flex-col gap-1 max-h-72 overflow-y-auto pr-1 no-scrollbar">
+                    {filteredUsers.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-10 text-slate-600 text-[12px]">
+                            <i className="ri-search-eye-line text-2xl mb-2 opacity-40"></i>
+                            <span>No matching users</span>
+                        </div>
+                    ) : (
+                        filteredUsers.map(user => {
                         const isSelected = selectedUserId.has(user._id);
                         return (
                             <div 
                                 key={user._id} 
-                                // 3. Dynamic classes for selection state and hover effects
-                                className={`user cursor-pointer p-3 flex gap-4 items-center rounded-lg border transition-all group ${
+                                className={`cursor-pointer p-3 flex gap-3 items-center rounded-xl border transition-all group ${
                                     isSelected 
-                                        ? 'bg-blue-900/30 border-blue-500/50' 
-                                        : "bg-slate-800/50 border-transparent hover:bg-slate-800 hover:border-slate-700"
+                                        ? 'bg-lagoon-spark/8 border-lagoon-spark/20' 
+                                        : "bg-white/[0.02] border-transparent hover:bg-white/[0.04] hover:border-white/[0.06]"
                                 }`}
                                 onClick={() => handleUserClick(user._id)}
                             >
-                                <div className={`aspect-square relative rounded-full w-12 h-12 flex items-center justify-center text-xl transition-colors ${
-                                    isSelected ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-400 group-hover:text-slate-300'
+                                <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all ring-1 ${
+                                    isSelected 
+                                        ? 'bg-lagoon-spark/15 text-lagoon-spark ring-lagoon-spark/25' 
+                                        : 'bg-white/[0.06] text-slate-500 group-hover:text-slate-300 ring-white/[0.06]'
                                 }`}>
-                                    <i className="ri-user-fill absolute"></i>
-                                    {/* Optional: Add a checkmark if selected */}
+                                    <i className="ri-user-3-fill text-xs"></i>
                                     {isSelected && (
-                                        <div className="absolute -bottom-1 -right-1 bg-blue-500 rounded-full w-5 h-5 flex items-center justify-center border-2 border-slate-900">
-                                            <i className="ri-check-line text-xs text-white"></i>
+                                        <div className="absolute -bottom-0.5 -right-0.5 bg-lagoon-spark rounded-full w-4 h-4 flex items-center justify-center ring-2 ring-[#000a30]">
+                                            <i className="ri-check-line text-[8px] text-[#000a30] font-bold"></i>
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex flex-col">
-                                    <h1 className={`font-semibold text-lg transition-colors ${isSelected ? 'text-blue-400' : 'text-slate-200'}`}>
-                                        {user.email.split('@')[0]} {/* Display name part before @ */}
-                                    </h1>
-                                    <small className="text-slate-500 text-xs">{user.email}</small>
+                                <div className="flex flex-col min-w-0">
+                                    <h4 className={`font-medium text-[13px] transition-colors truncate ${isSelected ? 'text-lagoon-spark' : 'text-slate-300 group-hover:text-white'}`}>
+                                        {user?.username || user?.email?.split('@')[0] || 'Unknown'}
+                                    </h4>
+                                    <span className="text-slate-600 text-[10px] truncate font-mono">{user?.email || ''}</span>
                                 </div>
                             </div>
                         )
-                    })}
+                    }))}
                 </div>
 
-                {/* Footer Action Button */}
-                <div className="absolute bottom-0 left-0 w-full p-6 bg-slate-900/90 border-t border-slate-800 backdrop-blur-md flex justify-center">
+                {/* Footer */}
+                <div className="absolute bottom-0 left-0 w-full p-4 bg-[#000a30]/95 border-t border-white/[0.06] backdrop-blur-md flex justify-center">
                     <button
                         onClick={addCollaborators}
                         disabled={selectedUserId.size === 0}
-                        className={`px-8 py-3 rounded-lg font-semibold text-sm transition-all transform active:scale-95 ${
+                        className={`w-full py-2.5 rounded-xl font-semibold text-[13px] transition-all transform active:scale-[0.98] ${
                             selectedUserId.size > 0
-                                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20'
-                                : 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                                ? 'bg-deep-blue-static hover:bg-deep-blue-static/85 text-white shadow-lg shadow-deep-blue-static/20'
+                                : 'bg-white/[0.04] text-slate-600 cursor-not-allowed border border-white/[0.06]'
                         }`}>
                         Add {selectedUserId.size > 0 ? selectedUserId.size : ''} Collaborator{selectedUserId.size !== 1 ? 's' : ''}
                     </button>

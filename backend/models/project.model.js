@@ -21,6 +21,16 @@ const projectSchema = new mongoose.Schema({
         default: {}
     },
 
+    buildCommand: {
+        type: Object,
+        default: null
+    },
+
+    startCommand: {
+        type: Object,
+        default: null
+    },
+
 })
 
 

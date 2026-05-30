@@ -84,7 +84,7 @@ io.on('connection', socket => {
         console.log(`Message received in Room: ${socket.roomId} | Content: ${message}`)
         try {
             await messageModel.create({
-                sender: data.sender.email,
+                sender: socket.userDb.username || data.sender.username || data.sender.email,
                 message: data.message,
                 projectId: socket.project._id
             });
@@ -124,11 +124,14 @@ io.on('connection', socket => {
                     }
                 });
             }
-            return;
         }
 
-
     })
+
+    socket.on('code-update', data => {
+        socket.broadcast.to(socket.roomId).emit('code-update', data);
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
         socket.leave(socket.roomId)

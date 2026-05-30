@@ -89,7 +89,7 @@ export const addUsersToProject = async ({ projectId, users, userId }) => {
         }
     }, {
         new: true
-    })
+    }).populate('users')
 
     return updatedProject
 
@@ -113,7 +113,7 @@ export const getProjectById = async ({ projectId }) => {
     return project;
 }
 
-export const updateFileTree = async ({ projectId, fileTree }) => {
+export const updateFileTree = async ({ projectId, fileTree, buildCommand, startCommand }) => {
     if (!projectId) {
         throw new Error("projectId is required")
     }
@@ -126,11 +126,13 @@ export const updateFileTree = async ({ projectId, fileTree }) => {
         throw new Error("fileTree is required")
     }
 
+    const updateData = { fileTree }
+    if (buildCommand !== undefined) updateData.buildCommand = buildCommand
+    if (startCommand !== undefined) updateData.startCommand = startCommand
+
     const project = await projectModel.findOneAndUpdate({
         _id: projectId
-    }, {
-        fileTree
-    }, {
+    }, updateData, {
         new: true
     })
 

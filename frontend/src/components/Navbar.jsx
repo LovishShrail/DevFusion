@@ -3,30 +3,40 @@ import { Link } from 'react-router-dom'
 import { UserContext } from '../context/user.context'
 import axios from '../config/axios'
 
+import logo from '../assets/logo.png'
+
 const Navbar = () => {
     const { user } = useContext(UserContext)
 
     return (
-        <header className="flex justify-between items-center p-2 bg-slate-900 border-b border-slate-800 flex-shrink-0">
-            <div className="flex items-center gap-4">
+        <header className="flex justify-between items-center px-5 h-14 bg-[#000620]/80 border-b border-white/[0.06] shrink-0 backdrop-blur-xl relative z-50 select-none">
+            
+            {/* Left: Logo + Nav */}
+            <div className="flex items-center gap-8">
                 <Link to="/home" className="flex items-center gap-2 group">
-                    <h1 className="pl-2 text-xl font-bold text-white group-hover:text-blue-400 transition-colors">Dev Fusion</h1>
+                    <img
+                        src={logo}
+                        alt="Dev Fusion"
+                        className="h-13 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    />
+                </Link>
+
+                <Link to="/home" className="flex items-center gap-1.5 text-slate-500 hover:text-white transition-colors text-[14px] font-medium">
+                    <i className="ri-folder-2-line text-sm"></i>
+                    <span>Projects</span>
                 </Link>
             </div>
 
-            <div className="flex items-center gap-6">
-
-                <Link to="/home" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
-                    <i className="ri-folder-2-line text-lg"></i>
-                    <span className="text-sm font-medium">Projects</span>
-                </Link>
-
-                <div className="flex items-center gap-2 px-3 py-1 bg-slate-800 rounded-full border border-slate-700">
-                    <i className="ri-user-smile-line text-blue-500"></i>
-                    <span className="text-sm font-medium text-slate-200">{user?.email}</span>
+            {/* Right: User + Logout */}
+            <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-[12px] font-medium text-slate-400">
+                    <div className="w-5 h-5 rounded-full bg-lagoon-spark/15 flex items-center justify-center">
+                        <i className="ri-user-3-fill text-[9px] text-lagoon-spark"></i>
+                    </div>
+                    <span>{user?.username || (user?.email ? user.email.split('@')[0] : 'Guest')}</span>
                 </div>
-                
-                <button 
+
+                <button
                     onClick={() => {
                         axios.get('/users/logout')
                             .then(() => {
@@ -39,9 +49,11 @@ const Navbar = () => {
                                 window.location.href = '/';
                             });
                     }}
-                    className="p-2 bg-slate-800 rounded-md text-slate-400 hover:text-white hover:bg-red-600 transition-all"
+                    className="flex items-center gap-1.5 p-1.5 px-2.5 text-slate-500 hover:text-white hover:bg-white/[0.06] rounded-lg transition-all text-[12px] font-medium"
+                    title="Sign out"
                 >
-                    <i className="ri-logout-box-r-line"></i>
+                    <i className="ri-logout-box-r-line text-sm"></i>
+                    <span>Logout</span>
                 </button>
             </div>
         </header>

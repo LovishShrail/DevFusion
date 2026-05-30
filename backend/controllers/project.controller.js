@@ -125,11 +125,13 @@ export const updateFileTree = async (req, res) => {
 
     try {
 
-        const { projectId, fileTree } = req.body;
+        const { projectId, fileTree, buildCommand, startCommand } = req.body;
 
         const project = await projectService.updateFileTree({
             projectId,
-            fileTree
+            fileTree,
+            buildCommand,
+            startCommand
         })
 
         return res.status(200).json({
