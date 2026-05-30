@@ -168,14 +168,17 @@ const Project = () => {
         receiveMessage('project-message', data => {
             setIsAiTyping(false)
             if (data.sender._id == 'ai') {
-                const message = JSON.parse(data.message)
-                webContainer?.mount(message.fileTree)
-                if (message.fileTree) {
-                    webContainer?.mount(getWebContainerTree(message.fileTree))
-                    setFileTree(message.fileTree || {})
-                }
-                if (message.buildCommand || message.startCommand) {
-                    setProject(prev => ({ ...prev, buildCommand: message.buildCommand, startCommand: message.startCommand }))
+                try {
+                    const message = JSON.parse(data.message)
+                    if (message.fileTree) {
+                        webContainer?.mount(getWebContainerTree(message.fileTree))
+                        setFileTree(message.fileTree || {})
+                    }
+                    if (message.buildCommand || message.startCommand) {
+                        setProject(prev => ({ ...prev, buildCommand: message.buildCommand, startCommand: message.startCommand }))
+                    }
+                } catch (parseErr) {
+                    console.error("Failed to parse AI message payload:", parseErr);
                 }
             }
             setMessages(prev => [...prev, data])
@@ -249,84 +252,83 @@ const Project = () => {
                         />
                     </div>
 
+                    {/* Preview Portal */}
+                    {iframeUrl && webContainer && (
+                        <div className="flex min-w-96 flex-col h-full border-l border-slate-800 bg-slate-900 shrink-0">
+
+                            {/* Browser Address Bar */}
+                            <div className="address-bar h-12 flex items-center gap-3 px-4 bg-slate-900 border-b border-slate-800">
+
+                                {/* Window Controls (Decoration) */}
+                                <div className="flex gap-1.5 group">
+                                    <div className="w-3 h-3 rounded-full bg-red-500/80 group-hover:bg-red-500 transition-colors"></div>
+                                    <div className="w-3 h-3 rounded-full bg-yellow-500/80 group-hover:bg-yellow-500 transition-colors"></div>
+                                    <div className="w-3 h-3 rounded-full bg-green-500/80 group-hover:bg-green-500 transition-colors"></div>
+                                </div>
+
+                                {/* Navigation Buttons */}
+                                <div className="flex gap-2 text-slate-400">
+                                    <button className="hover:text-white transition-colors"><i className="ri-arrow-left-line"></i></button>
+                                    <button className="hover:text-white transition-colors"><i className="ri-arrow-right-line"></i></button>
+                                    <button
+                                        onClick={() => {
+                                            // Simple refresh hack for iframe
+                                            const url = iframeUrl;
+                                            setIframeUrl('');
+                                            setTimeout(() => setIframeUrl(url), 10);
+                                        }}
+                                        className="hover:text-white transition-colors"
+                                    >
+                                        <i className="ri-refresh-line"></i>
+                                    </button>
+                                </div>
+
+                                {/* Address Input */}
+                                <div className="flex-grow relative">
+                                    <div className="absolute top-1/2 -translate-y-1/2 left-3 text-slate-500">
+                                        <i className="ri-lock-fill text-xs"></i>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        onChange={(e) => setIframeUrl(e.target.value)}
+                                        value={iframeUrl}
+                                        className="w-full py-1.5 pl-8 pr-3 bg-slate-800 text-slate-300 rounded-md text-sm outline-none border border-transparent focus:border-blue-500/50 focus:bg-slate-700/50 transition-all font-mono"
+                                    />
+                                </div>
+
+                                {/* External Link */}
+                                <a
+                                    href={iframeUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-slate-400 hover:text-white transition-colors"
+                                    title="Open in new tab"
+                                >
+                                    <i className="ri-external-link-line"></i>
+                                </a>
+
+                            </div>
+
+                            {/* Iframe Content */}
+                            <div className="flex-grow relative bg-white">
+                                {/* Loading Overlay (Optional: You can add state for this) */}
+                                {!iframeUrl && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-slate-100 text-slate-400">
+                                        <i className="ri-loader-4-line text-3xl animate-spin"></i>
+                                    </div>
+                                )}
+
+                                <iframe
+                                    src={iframeUrl}
+                                    className="w-full h-full border-none"
+                                    title="Project Preview"
+                                ></iframe>
+                            </div>
+                        </div>
+                    )}
 
                 </div>
 
-
-                {/* Preview Portal */}
-                {iframeUrl && webContainer && (
-                    <div className="flex min-w-96 flex-col h-full border-l border-slate-800 bg-slate-900 shrink-0">
-
-                        {/* Browser Address Bar */}
-                        <div className="address-bar h-12 flex items-center gap-3 px-4 bg-slate-900 border-b border-slate-800">
-
-                            {/* Window Controls (Decoration) */}
-                            <div className="flex gap-1.5 group">
-                                <div className="w-3 h-3 rounded-full bg-red-500/80 group-hover:bg-red-500 transition-colors"></div>
-                                <div className="w-3 h-3 rounded-full bg-yellow-500/80 group-hover:bg-yellow-500 transition-colors"></div>
-                                <div className="w-3 h-3 rounded-full bg-green-500/80 group-hover:bg-green-500 transition-colors"></div>
-                            </div>
-
-                            {/* Navigation Buttons */}
-                            <div className="flex gap-2 text-slate-400">
-                                <button className="hover:text-white transition-colors"><i className="ri-arrow-left-line"></i></button>
-                                <button className="hover:text-white transition-colors"><i className="ri-arrow-right-line"></i></button>
-                                <button
-                                    onClick={() => {
-                                        // Simple refresh hack for iframe
-                                        const url = iframeUrl;
-                                        setIframeUrl('');
-                                        setTimeout(() => setIframeUrl(url), 10);
-                                    }}
-                                    className="hover:text-white transition-colors"
-                                >
-                                    <i className="ri-refresh-line"></i>
-                                </button>
-                            </div>
-
-                            {/* Address Input */}
-                            <div className="flex-grow relative">
-                                <div className="absolute top-1/2 -translate-y-1/2 left-3 text-slate-500">
-                                    <i className="ri-lock-fill text-xs"></i>
-                                </div>
-                                <input
-                                    type="text"
-                                    onChange={(e) => setIframeUrl(e.target.value)}
-                                    value={iframeUrl}
-                                    className="w-full py-1.5 pl-8 pr-3 bg-slate-800 text-slate-300 rounded-md text-sm outline-none border border-transparent focus:border-blue-500/50 focus:bg-slate-700/50 transition-all font-mono"
-                                />
-                            </div>
-
-                            {/* External Link */}
-                            <a
-                                href={iframeUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-slate-400 hover:text-white transition-colors"
-                                title="Open in new tab"
-                            >
-                                <i className="ri-external-link-line"></i>
-                            </a>
-
-                        </div>
-
-                        {/* Iframe Content */}
-                        <div className="flex-grow relative bg-white">
-                            {/* Loading Overlay (Optional: You can add state for this) */}
-                            {!iframeUrl && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-slate-100 text-slate-400">
-                                    <i className="ri-loader-4-line text-3xl animate-spin"></i>
-                                </div>
-                            )}
-
-                            <iframe
-                                src={iframeUrl}
-                                className="w-full h-full border-none"
-                                title="Project Preview"
-                            ></iframe>
-                        </div>
-                    </div>
-                )}
             </section>
 
             <CollaboratorModal

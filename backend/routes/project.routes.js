@@ -19,6 +19,7 @@ router.get('/all',
 
 router.put('/add-user',
     authMiddleWare.authUser,
+    authMiddleWare.authProjectMember,
     body('projectId').isString().withMessage('Project ID is required'),
     body('users').isArray({ min: 1 }).withMessage('Users must be an array of strings').bail()
         .custom((users) => users.every(user => typeof user === 'string')).withMessage('Each user must be a string'),
@@ -27,16 +28,19 @@ router.put('/add-user',
 
 router.get('/get-project/:projectId',
     authMiddleWare.authUser,
+    authMiddleWare.authProjectMember,
     projectController.getProjectById
 )
 
 router.put('/update-file-tree',
     authMiddleWare.authUser,
+    authMiddleWare.authProjectMember,
     body('projectId').isString().withMessage('Project ID is required'),
     body('fileTree').isObject().withMessage('File tree is required'),
     projectController.updateFileTree
 )
-router.get('/get-messages/:projectId', authMiddleWare.authUser, projectController.getProjectMessages)
+router.get('/get-messages/:projectId', authMiddleWare.authUser, authMiddleWare.authProjectMember, projectController.getProjectMessages)
+
 
 
 export default router;

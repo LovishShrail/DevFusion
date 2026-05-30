@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { UserContext } from '../context/user.context'
+import axios from '../config/axios'
 
 const Navbar = () => {
     const { user } = useContext(UserContext)
@@ -27,8 +28,16 @@ const Navbar = () => {
                 
                 <button 
                     onClick={() => {
-                        localStorage.removeItem('token')
-                        window.location.href = '/' 
+                        axios.get('/users/logout')
+                            .then(() => {
+                                localStorage.removeItem('token');
+                                window.location.href = '/';
+                            })
+                            .catch(err => {
+                                console.error("Logout error:", err);
+                                localStorage.removeItem('token');
+                                window.location.href = '/';
+                            });
                     }}
                     className="p-2 bg-slate-800 rounded-md text-slate-400 hover:text-white hover:bg-red-600 transition-all"
                 >

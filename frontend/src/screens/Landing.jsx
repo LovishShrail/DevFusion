@@ -60,10 +60,7 @@ const Landing = () => {
                     >
                         Start Coding for Free
                     </button>
-                    <button className="px-8 py-4 bg-slate-900 border border-slate-800 hover:border-slate-700 text-white rounded-lg font-semibold text-lg transition-all flex items-center justify-center gap-2 group">
-                        <i className="ri-play-circle-line text-xl group-hover:text-blue-400 transition-colors"></i>
-                        Watch Demo
-                    </button>
+    
                 </div>
 
                 {/* Feature Grid */}

@@ -25,11 +25,17 @@ const ChatPanel = ({
     }, [messages,isAiTyping])
 
     const WriteAiMessage = (msg) => {
-        const messageObject = JSON.parse(msg)
+        let text = msg;
+        try {
+            const messageObject = JSON.parse(msg)
+            text = messageObject.text;
+        } catch (e) {
+            console.error("JSON parse failure in rendering AI message:", e);
+        }
         return (
             <div className='overflow-auto text-white rounded-sm p-2'>
                 <Markdown
-                    children={messageObject.text}
+                    children={text}
                     options={{
                         overrides: {
                             code: SyntaxHighlightedCode,

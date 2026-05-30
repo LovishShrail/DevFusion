@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import hljs from 'highlight.js'
+import React, { useState, useEffect } from 'react'
 import Terminal from './Terminal'
 
 const CodeEditor = ({
@@ -12,12 +11,87 @@ const CodeEditor = ({
     openFiles,
     terminalRef
 }) => {
+    const [localContent, setLocalContent] = useState("");
+
+    // Synchronize local content when current file shifts or files are modified remotely
+    useEffect(() => {
+        if (currentFile && fileTree[currentFile] && fileTree[currentFile].file) {
+            setLocalContent(fileTree[currentFile].file.contents || "");
+        } else {
+            setLocalContent("");
+        }
+    }, [currentFile, fileTree[currentFile]?.file?.contents]);
+
+    const handleContentChange = (e) => {
+        const updatedContent = e.target.value;
+        setLocalContent(updatedContent);
+
+        if (currentFile && fileTree[currentFile]) {
+            const ft = {
+                ...fileTree,
+                [currentFile]: {
+                    ...fileTree[currentFile],
+                    file: {
+                        ...fileTree[currentFile].file,
+                        contents: updatedContent
+                    }
+                }
+            };
+            setFileTree(ft);
+        }
+    };
+
+    const handleBlur = () => {
+        if (currentFile && fileTree[currentFile]) {
+            const ft = {
+                ...fileTree,
+                [currentFile]: {
+                    ...fileTree[currentFile],
+                    file: {
+                        ...fileTree[currentFile].file,
+                        contents: localContent
+                    }
+                }
+            };
+            saveFileTree(ft);
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            const start = e.target.selectionStart;
+            const end = e.target.selectionEnd;
+            const val = e.target.value;
+            const newContent = val.substring(0, start) + "  " + val.substring(end);
+            
+            setLocalContent(newContent);
+
+            if (currentFile && fileTree[currentFile]) {
+                const ft = {
+                    ...fileTree,
+                    [currentFile]: {
+                        ...fileTree[currentFile],
+                        file: {
+                            ...fileTree[currentFile].file,
+                            contents: newContent
+                        }
+                    }
+                };
+                setFileTree(ft);
+            }
+
+            // Restore caret selection position after state sync
+            setTimeout(() => {
+                e.target.selectionStart = e.target.selectionEnd = start + 2;
+            }, 0);
+        }
+    };
 
     return (
-        // ✅ ROOT: Strict h-full to fit parent, flex-col to stack elements
         <div className="flex flex-col h-full w-full bg-slate-950">
 
-            {/* 1. TOP BAR: Fixed height, never shrinks */}
+            {/* 1. TOP BAR: List open files and run trigger */}
             <div className="flex items-center justify-between bg-slate-900 border-b border-slate-800 h-10 px-4 shrink-0">
                 <div className="flex gap-2 overflow-x-auto no-scrollbar">
                     {openFiles.map((file, index) => (
@@ -43,49 +117,31 @@ const CodeEditor = ({
                 </button>
             </div>
 
-            {/* 2. CODE AREA: The tricky part */}
-            {/* flex-grow: Fills space */}
-            {/* overflow-auto: Enables internal scrolling */}
-            {/* h-1: HACK that forces flexbox to calculate height correctly relative to parent */}
-            <div className="flex-grow overflow-auto h-1 relative bg-slate-950">
-                
-                {fileTree[currentFile] && fileTree[currentFile].file && (
-                    <pre className="h-full m-0">
-                        <code
-                            className="block h-full outline-none p-6 font-mono text-sm"
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) => {
-                                const updatedContent = e.target.innerText;
-                                const ft = {
-                                    ...fileTree,
-                                    [currentFile]: {
-                                        file: {
-                                            contents: updatedContent
-                                        }
-                                    }
-                                }
-                                setFileTree(ft)
-                                saveFileTree(ft)
-                            }}
-                            dangerouslySetInnerHTML={{ 
-                                __html: hljs.highlight('javascript', fileTree[currentFile].file.contents || "").value 
-                            }}
-                            style={{
-                                fontFamily: '"JetBrains Mono", monospace',
-                                lineHeight: '1.6',
-                                backgroundColor: 'transparent',
-                                color: '#e2e8f0',
-                                whiteSpace: 'pre-wrap', // Prevents horizontal scroll hell
-                                tabSize: 2
-                            }}
-                        />
-                    </pre>
+            {/* 2. CODE AREA: Dynamic and highly stable textarea code pane */}
+            <div className="flex-grow overflow-auto h-1 relative bg-slate-950 flex">
+                {currentFile && fileTree[currentFile] && fileTree[currentFile].file ? (
+                    <textarea
+                        value={localContent}
+                        onChange={handleContentChange}
+                        onBlur={handleBlur}
+                        onKeyDown={handleKeyDown}
+                        className="w-full h-full outline-none p-6 font-mono text-sm bg-slate-950 text-slate-200 resize-none border-none focus:ring-0 focus:outline-none"
+                        style={{
+                            fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                            lineHeight: '1.6',
+                            tabSize: 2
+                        }}
+                        placeholder="// Write your code here..."
+                    />
+                ) : (
+                    <div className="flex-grow flex items-center justify-center text-slate-600 flex-col gap-2">
+                        <i className="ri-code-s-slash-line text-4xl opacity-50"></i>
+                        <span className="text-sm">Select a file from explorer to start editing</span>
+                    </div>
                 )}
             </div>
 
-            {/* 3. TERMINAL AREA: Fixed height, pinned to bottom */}
-            {/* shrink-0: NEVER lets this get squashed */}
+            {/* 3. TERMINAL AREA: Pins to the bottom */}
             <div className="shrink-0 h-52 border-t border-slate-800 bg-slate-950">
                 <Terminal ref={terminalRef} />
             </div>

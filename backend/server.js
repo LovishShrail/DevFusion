@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import projectModel from './models/project.model.js';
 import messageModel from './models/message.model.js';
+import userModel from './models/user.model.js';
 import { generateResult } from './services/ai.service.js';
 
 const port = process.env.PORT || 3000;
@@ -13,9 +14,9 @@ const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173", // Change this to your actual Frontend URL
+        origin: "http://localhost:5173", 
         methods: ["GET", "POST"],
-        credentials: true // Allow cookies to be sent
+        credentials: true 
     }
 });
 
@@ -37,17 +38,32 @@ io.use(async (socket, next) => {
             return next(new Error('Invalid projectId'));
         }
         socket.project = await projectModel.findById(projectId);
-        if (!token) {
+        if (!socket.project) {
+            return next(new Error('Project not found'));
+        }
+        if (!finalToken) {
             return next(new Error('Authentication error'))
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(finalToken, process.env.JWT_SECRET);
 
         if (!decoded) {
             return next(new Error('Authentication error'))
         }
         socket.user = decoded;
 
+        // Perform Socket BOLA Validation
+        const userDb = await userModel.findOne({ email: decoded.email });
+        if (!userDb) {
+            return next(new Error('Authentication error: User not found'));
+        }
+
+        const isMember = socket.project.users.some(uId => uId.toString() === userDb._id.toString());
+        if (!isMember) {
+            return next(new Error('Unauthorized: You are not a member of this project'));
+        }
+
+        socket.userDb = userDb;
         next();
 
     } catch (error) {
@@ -80,21 +96,35 @@ io.on('connection', socket => {
 
         if (aiIsPresentInMessage) {
             const prompt = message.replace('@ai', '');
-            const result = await generateResult(prompt);
-            await messageModel.create({
-                sender: 'AI',
-                message: result,
-                projectId: socket.project._id
-            });
+            try {
+                const result = await generateResult(prompt);
+                await messageModel.create({
+                    sender: 'AI',
+                    message: result,
+                    projectId: socket.project._id
+                });
 
-            io.to(socket.roomId).emit('project-message', {
-                message: result,
-                sender: {
-                    _id: 'ai',
-                    email: 'AI'
-                }
-            })
-            return
+                io.to(socket.roomId).emit('project-message', {
+                    message: result,
+                    sender: {
+                        _id: 'ai',
+                        email: 'AI'
+                    }
+                });
+            } catch (aiErr) {
+                console.error("AI Generation Error in Room:", socket.roomId, aiErr);
+                const errorPayload = JSON.stringify({
+                    text: "⚠️ Sorry, I encountered an error while processing your request. Please try again later."
+                });
+                io.to(socket.roomId).emit('project-message', {
+                    message: errorPayload,
+                    sender: {
+                        _id: 'ai',
+                        email: 'AI'
+                    }
+                });
+            }
+            return;
         }
 
 
