@@ -15,7 +15,7 @@ const App = () => {
 }
 const Layout = () => {
   const location = useLocation()
-  const hideNavbarRoutes = ['/login', '/register','/']
+  const hideNavbarRoutes = ['/']
   const showNavbar = !hideNavbarRoutes.includes(location.pathname)
 
   return (

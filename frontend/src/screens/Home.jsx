@@ -32,23 +32,23 @@ const Home = () => {
     }, [])
 
     return (
-        <main className='h-full overflow-auto text-white relative selection:bg-lagoon-spark/30 selection:text-white'>
-            {/* Ambient Glow */}
+        <main className='h-full overflow-auto text-comet relative selection:bg-celestial-light/30 selection:text-ghost-white'>
+            {/* Ambient atmospheric glows */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-15%] left-[-5%] w-[500px] h-[500px] bg-deep-blue-static/8 rounded-full blur-[150px]"></div>
-                <div className="absolute bottom-[-15%] right-[-5%] w-[400px] h-[400px] bg-lagoon-spark/4 rounded-full blur-[150px]"></div>
+                <div className="absolute top-[-15%] left-[-5%] w-[500px] h-[500px] bg-neon-violet/5 rounded-full blur-[150px]"></div>
+                <div className="absolute bottom-[-15%] right-[-5%] w-[400px] h-[400px] bg-celestial-light/3 rounded-full blur-[150px]"></div>
             </div>
 
-            <div className="relative z-10 p-8 max-w-6xl mx-auto">
+            <div className="relative z-10 p-8 max-w-6xl mx-auto font-sans">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-10">
                     <div>
-                        <h2 className="text-2xl font-semibold tracking-tight text-white">Your Projects</h2>
-                        <p className="text-[13px] text-slate-500 mt-1">Manage and access your workspaces</p>
+                        <h2 className="text-2xl font-display font-medium tracking-tight text-ghost-white">Your Workspaces</h2>
+                        <p className="text-[13px] text-whisper-blue mt-1">Manage and access your collaborative environments</p>
                     </div>
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="bg-deep-blue-static hover:bg-deep-blue-static/85 text-white px-5 py-2.5 rounded-xl font-semibold transition-all text-[13px] flex items-center gap-2 shadow-lg shadow-deep-blue-static/20 active:scale-[0.98]"
+                        className="bg-neon-violet hover:bg-neon-violet/85 text-ghost-white px-5 py-2.5 rounded-pill font-semibold transition-all text-[13px] flex items-center gap-2 shadow-lg shadow-neon-violet/20 active:scale-[0.98] cursor-pointer"
                     >
                         <i className="ri-add-line text-base"></i> New Project
                     </button>
@@ -57,14 +57,14 @@ const Home = () => {
                 {/* Project Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {project.length === 0 ? (
-                        <div className="col-span-full flex flex-col items-center justify-center h-80 bg-white/[0.02] border border-dashed border-white/[0.08] rounded-2xl">
-                            <div className="w-16 h-16 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
-                                <i className="ri-folder-add-line text-2xl text-slate-600"></i>
+                        <div className="col-span-full flex flex-col items-center justify-center h-80 glassy-card border-dashed">
+                            <div className="w-16 h-16 rounded-cards bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4 text-whisper-blue">
+                                <i className="ri-folder-add-line text-2xl"></i>
                             </div>
-                            <p className="text-slate-500 text-[14px] mb-5">No projects yet. Create your first one!</p>
+                            <p className="text-whisper-blue text-[14px] mb-5 font-sans">No workspaces found. Initialize one now.</p>
                             <button
                                 onClick={() => setIsModalOpen(true)}
-                                className="px-5 py-2.5 bg-deep-blue-static hover:bg-deep-blue-static/85 text-white rounded-xl font-semibold transition-all text-[13px] shadow-lg shadow-deep-blue-static/20"
+                                className="bg-neon-violet hover:bg-neon-violet/85 text-ghost-white px-6 py-2.5 rounded-pill font-semibold transition-all text-[13px] shadow-lg shadow-neon-violet/25 cursor-pointer"
                             >
                                 Create Project
                             </button>
@@ -77,23 +77,23 @@ const Home = () => {
                                         state: { project: proj }
                                     })
                                 }}
-                                className="group cursor-pointer p-5 bg-white/[0.02] border border-white/[0.06] rounded-2xl hover:border-lagoon-spark/30 transition-all duration-300 flex flex-col gap-4 hover:bg-white/[0.04] hover:shadow-xl hover:shadow-lagoon-spark/[0.03]"
+                                className="group cursor-pointer p-5 glassy-card hover:border-celestial-light/40 hover:-translate-y-1 hover:scale-[1.01] transition-all duration-300 flex flex-col gap-4"
                             >
                                 <div className="flex justify-between items-start">
-                                    <div className="p-2.5 bg-white/[0.05] rounded-xl text-slate-500 group-hover:bg-deep-blue-static/20 group-hover:text-lagoon-spark transition-all border border-white/[0.06]">
+                                    <div className="w-10 h-10 bg-white/[0.04] border border-white/[0.06] rounded-badges flex items-center justify-center text-whisper-blue group-hover:bg-neon-violet group-hover:text-ghost-white transition-all">
                                         <i className="ri-code-box-line text-lg"></i>
                                     </div>
-                                    <div className="text-slate-600 group-hover:text-lagoon-spark transition-colors">
+                                    <div className="text-whisper-blue group-hover:text-ghost-white transition-colors">
                                         <i className="ri-arrow-right-up-line text-base"></i>
                                     </div>
                                 </div>
                                 <div>
-                                    <h3 className="text-[15px] font-semibold text-white mb-1 group-hover:text-lagoon-spark transition-colors">{proj.name}</h3>
-                                    <p className="text-[11px] text-slate-600">Last edited just now</p>
+                                    <h3 className="text-[15px] font-display font-medium text-ghost-white mb-1 group-hover:text-celestial-light transition-colors">{proj.name}</h3>
+                                    <p className="text-[11px] text-whisper-blue">Active session</p>
                                 </div>
-                                <div className="flex items-center gap-1.5 text-slate-500 text-[11px] mt-auto">
-                                    <i className="ri-group-line text-lagoon-spark/50 text-xs"></i> 
-                                    <span>{proj.users.length} Collaborator{proj.users.length !== 1 ? 's' : ''}</span>
+                                <div className="flex items-center gap-1.5 text-whisper-blue text-[11px] mt-auto font-sans">
+                                    <i className="ri-group-line text-celestial-light/50 text-xs"></i> 
+                                    <span>{proj.users.length} Member{proj.users.length !== 1 ? 's' : ''}</span>
                                 </div>
                             </div>
                         ))
@@ -103,30 +103,30 @@ const Home = () => {
 
             {/* Create Project Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
-                    <div className="bg-[#000a30] p-6 rounded-2xl shadow-2xl shadow-black/40 w-[400px] border border-white/[0.08] relative animate-fadeIn">
+                <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
+                    <div className="login-card p-8 w-full max-w-md relative animate-fadeIn">
                         <div className="flex justify-between items-center mb-5">
-                            <h2 className="text-lg font-semibold text-white">New Project</h2>
-                            <button onClick={() => setIsModalOpen(false)} className="text-slate-500 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/[0.06]">
+                            <h2 className="text-lg font-display font-medium text-ghost-white">Create Workspace</h2>
+                            <button onClick={() => setIsModalOpen(false)} className="text-whisper-blue hover:text-ghost-white transition-colors p-1 rounded-lg hover:bg-white/[0.06] cursor-pointer">
                                 <i className="ri-close-line text-lg"></i>
                             </button>
                         </div>
                         <form onSubmit={createProject}>
                             <div className="mb-5">
-                                <label className="block text-[12px] font-medium text-slate-400 mb-1.5">Project Name</label>
+                                <label className="block text-[12px] font-medium text-arctic-mist mb-1.5 font-sans">Workspace Name</label>
                                 <input
                                     onChange={(e) => setProjectName(e.target.value)}
                                     value={projectName}
                                     type="text" 
-                                    className="w-full p-3 bg-white/[0.04] text-white border border-white/[0.08] rounded-xl focus:outline-none focus:border-lagoon-spark/40 focus:ring-1 focus:ring-lagoon-spark/20 transition-all text-[13px] placeholder-slate-600" 
-                                    placeholder="e.g. My Awesome App"
+                                    className="w-full p-4 input-minimal text-[13px] font-sans" 
+                                    placeholder="e.g. My Next-Gen App"
                                     required 
                                     autoFocus
                                 />
                             </div>
-                            <div className="flex justify-end gap-2">
-                                <button type="button" className="px-4 py-2 text-slate-400 rounded-lg hover:text-white hover:bg-white/[0.06] transition-all text-[12px] font-medium" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                                <button type="submit" className="px-5 py-2 bg-deep-blue-static hover:bg-deep-blue-static/85 text-white rounded-lg shadow-lg shadow-deep-blue-static/20 text-[12px] font-semibold">Create</button>
+                            <div className="flex justify-end gap-3">
+                                <button type="button" className="btn-pill-secondary px-5 py-2 text-[12px] font-semibold cursor-pointer" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                                <button type="submit" className="btn-solid-primary px-5 py-2 text-[12px] font-semibold cursor-pointer">Create</button>
                             </div>
                         </form>
                     </div>

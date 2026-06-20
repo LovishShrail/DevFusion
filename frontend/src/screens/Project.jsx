@@ -307,7 +307,7 @@ const Project = () => {
         <main className='h-full w-full flex overflow-hidden select-none relative'>
 
             {/* ──────────────────── LEFT: Chat Panel ──────────────────── */}
-            <section className="flex flex-col h-full w-[380px] min-w-[340px] max-w-[420px] bg-[#000620]/90 border-r border-white/[0.06] relative backdrop-blur-xl z-10">
+            <section className="flex flex-col h-full w-[380px] min-w-[340px] max-w-[420px] bg-midnight-abyss/90 border-r border-white/[0.06] relative backdrop-blur-xl z-10 glassy-card rounded-none border-t-0 border-b-0 border-l-0">
                 <ChatPanel
                     isSidePanelOpen={isSidePanelOpen}
                     setIsSidePanelOpen={setIsSidePanelOpen}
@@ -328,7 +328,7 @@ const Project = () => {
             </section>
 
             {/* ──────────────────── RIGHT: Editor Area ──────────────────── */}
-            <section className="flex-1 h-full flex min-w-0 overflow-hidden">
+            <section className="flex-1 h-full flex min-w-0 overflow-hidden bg-midnight-abyss">
 
                 {/* File Explorer */}
                 <FileTree
@@ -357,10 +357,10 @@ const Project = () => {
 
                 {/* Preview Portal */}
                 {iframeUrl && webContainer && (
-                    <div className="flex flex-col h-full w-[420px] min-w-[320px] border-l border-white/[0.06] bg-[#000620]/80 shrink-0">
+                    <div className="flex flex-col h-full w-[420px] min-w-[320px] border-l border-white/[0.06] bg-midnight-abyss/85 shrink-0 glassy-card rounded-none border-t-0 border-b-0 border-r-0">
 
-                        {/* Browser Chrome Bar */}
-                        <div className="h-11 flex items-center gap-3 px-4 bg-[#000a35]/70 border-b border-white/[0.06] shrink-0">
+                         {/* Browser Chrome Bar */}
+                        <div className="h-11 flex items-center gap-3 px-4 bg-midnight-abyss/90 border-b border-white/[0.06] shrink-0 font-sans">
 
                             {/* Window Dots — red is functional kill button */}
                             <div className="flex gap-1.5 select-none">
@@ -381,16 +381,16 @@ const Project = () => {
                             </div>
 
                             {/* Nav */}
-                            <div className="flex gap-1.5 text-slate-500">
-                                <button className="hover:text-white transition-colors p-0.5"><i className="ri-arrow-left-s-line text-sm"></i></button>
-                                <button className="hover:text-white transition-colors p-0.5"><i className="ri-arrow-right-s-line text-sm"></i></button>
+                            <div className="flex gap-1.5 text-whisper-blue">
+                                <button className="hover:text-ghost-white transition-colors p-0.5 cursor-pointer"><i className="ri-arrow-left-s-line text-sm"></i></button>
+                                <button className="hover:text-ghost-white transition-colors p-0.5 cursor-pointer"><i className="ri-arrow-right-s-line text-sm"></i></button>
                                 <button
                                     onClick={() => {
                                         const url = iframeUrl;
                                         setIframeUrl('');
                                         setTimeout(() => setIframeUrl(url), 10);
                                     }}
-                                    className="hover:text-white transition-colors p-0.5"
+                                    className="hover:text-ghost-white transition-colors p-0.5 cursor-pointer"
                                 >
                                     <i className="ri-refresh-line text-sm"></i>
                                 </button>
@@ -398,12 +398,12 @@ const Project = () => {
 
                             {/* Address Bar */}
                             <div className="flex-1 relative">
-                                <i className="ri-lock-2-fill absolute left-2.5 top-1/2 -translate-y-1/2 text-emerald-400/60 text-[10px]"></i>
+                                <i className="ri-lock-2-fill absolute left-2.5 top-1/2 -translate-y-1/2 text-celestial-light/60 text-[10px]"></i>
                                 <input
                                     type="text"
                                     onChange={(e) => setIframeUrl(e.target.value)}
                                     value={iframeUrl}
-                                    className="w-full py-1 pl-7 pr-3 bg-white/[0.04] text-slate-400 rounded-md text-[11px] outline-none border border-white/[0.06] focus:border-lagoon-spark/40 transition-all font-mono"
+                                    className="w-full py-1 pl-7 pr-3 bg-white/[0.02] border border-white/[0.06] text-whisper-blue placeholder-whisper-blue/30 rounded-md focus:border-celestial-light/40 transition-all font-mono text-[11px] outline-none"
                                 />
                             </div>
 
@@ -412,7 +412,7 @@ const Project = () => {
                                 href={iframeUrl}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-slate-500 hover:text-white transition-colors"
+                                className="text-whisper-blue hover:text-ghost-white transition-colors cursor-pointer"
                                 title="Open in new tab"
                             >
                                 <i className="ri-external-link-line text-sm"></i>
@@ -428,7 +428,7 @@ const Project = () => {
                                     setIframeUrl(null)
                                     terminalInstance.current?.writeln('\r\n\x1b[31m❯ Server stopped.\x1b[0m\r\n')
                                 }}
-                                className="flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/20 hover:border-red-500/40 transition-all shrink-0"
+                                className="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/20 hover:border-red-500/40 transition-all shrink-0 cursor-pointer"
                                 title="Kill server & close preview"
                             >
                                 <i className="ri-stop-circle-line text-[11px]"></i>

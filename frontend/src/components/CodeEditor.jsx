@@ -137,26 +137,26 @@ const CodeEditor = ({
         <div className="flex flex-col h-full w-full">
 
             {/* ── Tab Bar ── */}
-            <div className="flex items-center justify-between bg-[#000a35]/50 border-b border-white/[0.06] h-11 px-2 shrink-0 select-none">
+            <div className="flex items-center justify-between bg-midnight-abyss/55 border-b border-white/[0.06] h-11 px-2 shrink-0 select-none font-sans">
                 <div className="flex items-center gap-0.5 overflow-x-auto no-scrollbar flex-1 min-w-0 mr-3">
                     {openFiles.map((file, index) => (
                         <div
                             key={index}
                             className={`group flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-md shrink-0 transition-all cursor-pointer ${
                                 currentFile === file 
-                                ? 'bg-white/[0.07] text-white' 
-                                : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.03]'
+                                ? 'bg-white/[0.06] text-ghost-white' 
+                                : 'text-whisper-blue hover:text-ghost-white hover:bg-white/[0.02]'
                             }`}
                             onClick={() => setCurrentFile(file)}
                         >
-                            <i className={`${getFileIcon(file)} text-[10px] ${currentFile === file ? 'text-lagoon-spark/70' : 'text-slate-600'}`}></i>
+                            <i className={`${getFileIcon(file)} text-[10px] ${currentFile === file ? 'text-celestial-light' : 'text-whisper-blue/60'}`}></i>
                             <span className="font-medium">{file}</span>
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     closeFile(file);
                                 }}
-                                className='opacity-0 group-hover:opacity-100 ml-1 text-slate-500 hover:text-red-400 transition-all text-[10px] p-0.5 rounded'
+                                className='opacity-0 group-hover:opacity-100 ml-1 text-whisper-blue/60 hover:text-red-400 transition-all text-[10px] p-0.5 rounded cursor-pointer'
                                 title="Close file"
                             >
                                 <i className="ri-close-line"></i>
@@ -167,7 +167,7 @@ const CodeEditor = ({
 
                 <button
                     onClick={runProject}
-                    className="flex items-center gap-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 px-3 py-1.5 rounded-md text-[11px] font-semibold transition-all shrink-0 border border-emerald-500/20 hover:border-emerald-500/30"
+                    className="flex items-center gap-1.5 bg-neon-violet/10 hover:bg-neon-violet/20 text-celestial-light px-3.5 py-1 rounded-pill text-[11px] font-semibold transition-all shrink-0 border border-neon-violet/30 hover:border-neon-violet/50 cursor-pointer shadow-lg shadow-neon-violet/5"
                 >
                     <i className="ri-play-fill text-xs"></i>
                     <span>Run</span>
@@ -185,7 +185,7 @@ const CodeEditor = ({
                             onChange={handleContentChange}
                             onBlur={handleBlur}
                             onKeyDown={handleKeyDown}
-                            className="w-full h-full outline-none p-5 pl-14 text-[13px] bg-transparent text-slate-200 resize-none border-none focus:ring-0 focus:outline-none caret-lagoon-spark"
+                            className="w-full h-full outline-none p-5 pl-14 text-[13px] bg-transparent text-ghost-white resize-none border-none focus:ring-0 focus:outline-none caret-celestial-light"
                             style={{
                                 fontFamily: '"Fira Code", "Cascadia Code", monospace',
                                 lineHeight: '1.7',
@@ -197,16 +197,16 @@ const CodeEditor = ({
                     </div>
                 ) : (
                     <div className="h-full flex items-center justify-center flex-col gap-3 select-none">
-                        <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
-                            <i className="ri-code-s-slash-line text-2xl text-lagoon-spark/30"></i>
+                        <div className="w-16 h-16 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-center shadow-lg">
+                            <i className="ri-code-s-slash-line text-2xl text-celestial-light/30"></i>
                         </div>
-                        <span className="text-[12px] text-slate-600">Select a file to start editing</span>
+                        <span className="text-[12px] text-whisper-blue font-sans">Select a file to start editing</span>
                     </div>
                 )}
             </div>
 
             {/* ── Terminal ── */}
-            <div className="shrink-0 h-44 border-t border-white/[0.06]">
+            <div className="shrink-0 h-44 border-t border-white/[0.06] bg-midnight-abyss">
                 <Terminal ref={terminalRef} />
             </div>
             
