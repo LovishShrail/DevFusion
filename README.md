@@ -150,7 +150,7 @@ Create a `.env` file in the `backend` directory:
 ```env
 PORT=3000
 MONGODB_URI=mongodb://127.0.0.1:27017/devfusion
-JWT_SECRET=your_jwt_signing_secret_key
+JWT_SECRET=your_jwt_secret_key
 REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 REDIS_PASSWORD=
