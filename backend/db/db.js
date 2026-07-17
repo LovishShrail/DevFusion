@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-
+import dns from 'dns';
+dns.setServers(['8.8.8.8', '1.1.1.1']);
 
 function connect() {
     console.log("DATABASE_URL:", process.env.MONGODB_URI);

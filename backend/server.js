@@ -8,6 +8,7 @@ import projectModel from './models/project.model.js';
 import messageModel from './models/message.model.js';
 import userModel from './models/user.model.js';
 import { generateResult } from './services/ai.service.js';
+import redisClient from './services/redis.service.js';
 
 const port = process.env.PORT || 3000;
 
@@ -30,6 +31,12 @@ io.use(async (socket, next) => {
         const finalToken = token || socket.handshake.auth?.token || socket.handshake.headers.authorization?.split(' ')[1];
         if (!finalToken) {
             return next(new Error('Authentication error: No Token Found'));
+        }
+
+        // Check if token is blacklisted in Redis (e.g. logged out)
+        const isBlackListed = await redisClient.get(finalToken);
+        if (isBlackListed) {
+            return next(new Error('Authentication error: Token is blacklisted'));
         }
 
         const projectId = socket.handshake.query.projectId;

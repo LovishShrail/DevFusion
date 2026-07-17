@@ -40,12 +40,10 @@ const Navbar = () => {
                     onClick={() => {
                         axios.get('/users/logout')
                             .then(() => {
-                                localStorage.removeItem('token');
                                 window.location.href = '/';
                             })
                             .catch(err => {
                                 console.error("Logout error:", err);
-                                localStorage.removeItem('token');
                                 window.location.href = '/';
                             });
                     }}

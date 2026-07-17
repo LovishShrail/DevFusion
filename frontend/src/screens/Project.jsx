@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react'
 import { UserContext } from '../context/user.context'
 import { useLocation, useParams } from 'react-router-dom'
 import axios from '../config/axios'
-import { initializeSocket, receiveMessage, sendMessage } from '../config/socket'
+import { initializeSocket, disconnectSocket, receiveMessage, sendMessage } from '../config/socket'
 import { getWebContainer } from '../config/webcontainer'
 
 // Components
@@ -299,7 +299,10 @@ const Project = () => {
 
         axios.get('/users/all').then(res => setUsers(res.data.users))
 
-        return () => { socket.off('project-message') }
+        return () => { 
+            socket.off('project-message');
+            disconnectSocket();
+        }
     }, [projectId])
 
     // --- Render ---

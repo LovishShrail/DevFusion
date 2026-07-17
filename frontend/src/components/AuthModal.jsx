@@ -46,7 +46,7 @@ const AuthModal = ({ isOpen, onClose }) => {
 
                 <div className="text-center mb-8">
                     {/* Toggle Pill */}
-                    <div className="inline-flex p-1 bg-white/[0.02] border border-white/[0.06] rounded-xl mb-6 select-none">
+                    <div className="inline-flex p-1 bg-white/2 border border-white/6 rounded-xl mb-6 select-none">
                         <button 
                             onClick={() => setIsLogin(true)}
                             className={`px-6 py-2 rounded-lg text-[12px] font-semibold transition-all cursor-pointer ${isLogin ? 'bg-neon-violet text-ghost-white shadow-lg shadow-neon-violet/25' : 'text-whisper-blue hover:text-arctic-mist'}`}
