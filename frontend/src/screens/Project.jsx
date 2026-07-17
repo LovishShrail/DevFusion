@@ -3,7 +3,7 @@ import { UserContext } from '../context/user.context'
 import { useLocation, useParams } from 'react-router-dom'
 import axios from '../config/axios'
 import { initializeSocket, disconnectSocket, receiveMessage, sendMessage } from '../config/socket'
-import { getWebContainer } from '../config/webcontainer'
+import { getWebContainer } from '../config/webContainer'
 
 // Components
 import CollaboratorModal from '../components/CollaboratorModal'
